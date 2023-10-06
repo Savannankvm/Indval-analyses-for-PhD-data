@@ -1,0 +1,287 @@
+---
+title: "S_van_Mesdag_Biodiversity_Analyses_for_Barrow_Plant_Data"
+author: "Savanna van Mesdag"
+date: "2023-09-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+##The following is written by Savanna van Mesdag, going through the relevant coding and analyses for the biodiversity analyses for the Barrow plant communities.
+
+#setwd#
+
+#To run the following code to carry out the analyses, the following packages must be installed#
+
+```{R}
+
+install.packages("iNEXT", repos = 	"http://chao.stat.nthu.edu.tw/wordpress/software_download/")
+
+install.packages('devtools', repos = "https://github.com/r-lib/devtools")
+
+install.packages('AnneChao/iNEXT', repos = 	"http://chao.stat.nthu.edu.tw/wordpress/software_download/")
+
+install.packages("ggthemes", repos = "https://github.com/jrnold/ggthemes")
+
+install.packages("vegan", repos = "	https://github.com/vegandevs/vegan")
+
+```
+
+##The packages also need to be loaded prior to running the analyses and producing graphs#
+```{R}
+
+library(devtools)
+library(iNEXT)
+library(ggplot2)
+library(ggthemes)
+library(vegan)
+
+```
+
+#Loading Barrow data
+
+```{R}
+urlfile1 <- 'https://raw.githubusercontent.com/Savannankvm/Biodiversity-analyses-for-six-study-sites/PhD-files/Barrow_Abundance_Data.csv?token=GHSAT0AAAAAACG4POBNQ6K6T4V5KYG6HMXSZHOAFWQ'
+
+Barrow_Nos <-read.csv(urlfile1)
+
+```
+
+#To look at the Barrow data#
+
+```{R}
+print(Barrow_Nos)
+
+```
+
+#colSums to establish sample size for each of the quadrats.
+```{R}
+colSums(Barrow_Nos)
+```
+
+#Setting m to sample size for Quadrat 1 (132 individuals.) This will give me observed
+#qD value that will be most representative for Quadrat and Community. Will do the same
+#for the other 10 communities below.
+
+```{R}
+
+m <- c(132)
+
+Barrow_Datam <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = m)
+
+Barrow_Datam
+
+Barrow_Datam_1 <- iNEXT(Barrow_Nos, q=c(0,1,2), datatype= "abundance", size = m)
+
+Barrow_Datam_1
+
+n <- c(444)
+
+Barrow_Datan <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = n)
+
+Barrow_Datan
+
+o <- c(446)
+
+Barrow_Datao <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = o)
+
+Barrow_Datao
+
+p <- c(294)
+
+Barrow_Datap <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = p)
+
+Barrow_Datap
+
+q <- c(277)
+
+Barrow_Dataq <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = q)
+
+Barrow_Dataq
+
+r <- c(464)
+
+Barrow_Datar <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = r)
+
+Barrow_Datar
+
+s <- c(328)
+
+Barrow_Datas <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = s)
+
+Barrow_Datas
+
+t <- c(428)
+
+Barrow_Datat <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = t)
+
+Barrow_Datat
+
+u <- c(82)
+
+Barrow_Datau <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = u)
+
+Barrow_Datau
+
+v <- c(250)
+
+Barrow_Datav <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = v)
+
+Barrow_Datav
+
+w <- c(155)
+
+Barrow_Dataw <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance", size = w)
+
+Barrow_Dataw
+
+```
+
+#Now to run the analysis again without specificying the size, can do this for
+#looking at the other diversity indices#
+
+```{R}
+
+Barrow_Data <- iNEXT(Barrow_Nos, q=c(0), datatype= "abundance")
+
+Barrow_Data
+
+Barrow_Data_1 <- iNEXT(Barrow_Nos, q=c(1), datatype = "abundance")
+
+Barrow_Data_1
+
+```
+
+#Now to look at further things, such as sample coverage#
+
+```{R}
+
+Barrowout1 <- estimateD(Barrow_Nos, q = c(0,1,2), datatype = "abundance", base="size")
+Barrowout1
+
+Barrowout2 <- estimateD(Barrow_Nos, q = c(0,1,2), datatype = "abundance", base="coverage")
+Barrowout2
+
+```
+
+#Looking at species evenness using the vegan package#
+
+```{R}
+
+H <- diversity(Barrow_Nos)
+
+Bevenness <- H/log(specnumber(Barrow_Nos))
+
+summary(Bevenness)
+
+H1 <- diversity(Barrow_Nos$Quadrat.1)
+
+Bevenness1 <- H1/log(specnumber(Barrow_Nos$Quadrat.1))
+
+summary(Bevenness1)
+
+H2 <- diversity(Barrow_Nos$Quadrat.2)
+
+Bevenness2 <- H2/log(specnumber(Barrow_Nos$Quadrat.2))
+
+summary(Bevenness2)
+
+H3 <- diversity(Barrow_Nos$Quadrat.3)
+
+Bevenness3 <- H3/log(specnumber(Barrow_Nos$Quadrat.3))
+
+summary(Bevenness3)
+
+H4 <- diversity(Barrow_Nos$Quadrat.4)
+
+Bevenness4 <- H4/log(specnumber(Barrow_Nos$Quadrat.4))
+
+summary(Bevenness4)
+
+H5 <- diversity(Barrow_Nos$Quadrat.5)
+
+Bevenness5 <- H5/log(specnumber(Barrow_Nos$Quadrat.5))
+
+summary(Bevenness5)
+
+H6 <- diversity(Barrow_Nos$Quadrat.6)
+
+Bevenness6 <- H6/log(specnumber(Barrow_Nos$Quadrat.6))
+
+summary(Bevenness6)
+
+H7 <- diversity(Barrow_Nos$Quadrat.7)
+
+Bevenness7 <- H7/log(specnumber(Barrow_Nos$Quadrat.7))
+
+summary(Bevenness7)
+
+H8 <- diversity(Barrow_Nos$Quadrat.8)
+
+Bevenness8 <- H8/log(specnumber(Barrow_Nos$Quadrat.8))
+
+summary(Bevenness8)
+
+H9 <- diversity(Barrow_Nos$Quadrat.9)
+
+Bevenness9 <- H9/log(specnumber(Barrow_Nos$Quadrat.9))
+
+summary(Bevenness9)
+
+H10 <- diversity(Barrow_Nos$Quadrat.10)
+
+Bevenness10 <- H10/log(specnumber(Barrow_Nos$Quadrat.10))
+
+summary(Bevenness10)
+
+H11 <- diversity(Barrow_Nos$Quadrat.11)
+
+Bevenness11 <- H11/log(specnumber(Barrow_Nos$Quadrat.11))
+
+summary(Bevenness11)
+
+```
+
+##Now to generate graphs to better visually examine species curves etc##
+
+```{R}
+
+Barrow_Data_Graph1 <- ggiNEXT(x = Barrow_Data, se=TRUE, type = 1,
+                              facet.var = "None", grey=TRUE)
+
+Barrow_Data_Graph1
+
+
+g7 <- Barrow_Data_Graph1 + theme_hc(style = "darkunica") +
+  scale_colour_hc("darkunica")
+
+g7
+
+
+Barrow_Data_Graph2 <- ggiNEXT(x = Barrow_Data, se=TRUE, type = 1,
+                              facet.var="None", grey= TRUE) 
+
+Barrow_Data_Graph2
+
+plot(Barrow_Data, type=1)
+
+Barrow_Data_Graph3 <- ggiNEXT(x = Barrow_Data, se=TRUE, type = 2,
+                              facet.var="None", grey = TRUE) 
+
+Barrow_Data_Graph3
+
+plot(Barrow_Data, type=2)
+
+Barrow_Data_Graph4 <- ggiNEXT(x = Barrow_Data, se=TRUE, type = 3,
+                              facet.var="None", grey= TRUE) 
+Barrow_Data_Graph4
+
+plot(Barrow_Data, type=3)
+
+```
